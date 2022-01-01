@@ -7,7 +7,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/xmrig/xmrig.svg)](https://github.com/xmrig/xmrig/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/xmrig/xmrig.svg)](https://github.com/xmrig/xmrig/network)
 
-This an optimized xmrig-release.
+This is an optimized xmrig-release.
 XMRig is a high performance, open source, cross platform RandomX, KawPow, CryptoNight and AstroBWT unified CPU/GPU miner and [RandomX benchmark](https://xmrig.com/benchmark).
 
 Feedback and mining discussion: https://discord.gg/5xqtAFMu4R
