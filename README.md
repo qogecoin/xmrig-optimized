@@ -1,4 +1,4 @@
-# XMRig
+# XMRig Compile Guide for AMD
 
 [![Github All Releases](https://img.shields.io/github/downloads/xmrig/xmrig/total.svg)](https://github.com/xmrig/xmrig/releases)
 [![GitHub release](https://img.shields.io/github/release/xmrig/xmrig/all.svg)](https://github.com/xmrig/xmrig/releases)
@@ -7,35 +7,59 @@
 [![GitHub stars](https://img.shields.io/github/stars/xmrig/xmrig.svg)](https://github.com/xmrig/xmrig/stargazers)
 [![GitHub forks](https://img.shields.io/github/forks/xmrig/xmrig.svg)](https://github.com/xmrig/xmrig/network)
 
-This is an optimized xmrig-release.
+This is a compile guide for optimized AMD builds. 
 XMRig is a high performance, open source, cross platform RandomX, KawPow, CryptoNight and AstroBWT unified CPU/GPU miner and [RandomX benchmark](https://xmrig.com/benchmark).
 
 Feedback and mining discussion: https://discord.gg/5xqtAFMu4R
 
-## Mining backends
-- **CPU** (x64/ARMv8)
-- **OpenCL** for AMD GPUs.
-- **CUDA** for NVIDIA GPUs via external [CUDA plugin](https://github.com/xmrig/xmrig-cuda).
+# Build XMRig
+Download and install the AMD compiler:
 
-## Download
-* **[Binary releases](https://github.com/xmrig/xmrig/releases)**
-* **[Build from source](https://xmrig.com/docs/miner/build)**
+Go to https://developer.amd.com/amd-aocc/ and install the AMD optimized clang version.
 
-## Usage
-The preferred way to configure the miner is the [JSON config file](https://xmrig.com/docs/miner/config) as it is more flexible and human friendly. The [command line interface](https://xmrig.com/docs/miner/command-line-options) does not cover all features, such as mining profiles for different algorithms. Important options can be changed during runtime without miner restart by editing the config file or executing [API](https://xmrig.com/docs/miner/api) calls.
+Download aocc-compiler-<version>.tar to the directory of your choice, say <compdir>
+Installation with tar file does not require root or sudo permission.
 
-* **[Wizard](https://xmrig.com/wizard)** helps you create initial configuration for the miner.
-* **[Workers](http://workers.xmrig.info)** helps manage your miners via HTTP API.
+		$ cd <compdir>
+		$ tar -xvf aocc-compiler-<version>.tar
+		$ cd aocc-compiler-<version>
+		$ bash install.sh
+This will install the compiler and display the AOCC setup instructions.
 
-## Donations
-* Default donation 1% (1 minute in 100 minutes) can be increased via option `donate-level` or disabled in source code.
-* XMR: `48edfHu7V9Z84YzzMa6fUueoELZ9ZRXq9VetWzYGzKt52XU5xvqgzYnDK9URnRoJMk1j8nLwEVsaSWJ4fhdUyZijBGUicoD`
+		$ source <compdir>/setenv_AOCC.sh
+This will set up a shell environment for using AOCC C, C++, and Fortran compilers in the shell environment,
+where the above command was executed.
 
-## Developers
-* **[xmrig](https://github.com/xmrig)**
-* **[sech1](https://github.com/SChernykh)**
+Download and install the XMrig dependencies:
 
-## Contacts
-* support@xmrig.com
-* [reddit](https://www.reddit.com/user/XMRig/)
-* [twitter](https://twitter.com/xmrig_dev)
+           $ sudo apt-get install git build-essential cmake automake libtool autoconf
+           $ git clone https://github.com/xmrig/xmrig.git
+           $ mkdir xmrig/build && cd xmrig/scripts
+           $ ./build_deps.sh && cd ../build
+
+Build XMRig with following CMake settings (use your path to the compiler). If your shell environment setup is correct, you just can write clang and
+clang++ :
+```
+       $ cmake .. -D CMAKE_C_COMPILER=/home/ubuntu/Downloads/aocc-compiler-3.2.0/bin/clang -D CMAKE_CXX_COMPILER=/home/Ubuntu/Downloads/aocc-compiler-3.2.0/bin/clang++ -DXMRIG_DEPS=scripts/deps
+```
+```
+       $ make -j$(nproc)
+```
+  
+You can bech your build with: 
+```
+       $ sudo ./xmrig --bench=1M --submit
+```   
+  
+You can put   
+```
+SET (CMAKE_CXX_FLAGS "-O3")
+SET (CMAKE_C_FLAGS "-O3") 
+```  
+or  
+```  
+SET (CMAKE_CXX_FLAGS "-Ofast")
+SET (CMAKE_C_FLAGS "-Ofast")
+```  
+in your cmake file for more optimizations.  
+  
